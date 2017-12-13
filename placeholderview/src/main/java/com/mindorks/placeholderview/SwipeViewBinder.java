@@ -53,6 +53,8 @@ public class SwipeViewBinder<
     private int mOriginalTopMargin;
     private float mTransXToRestore;
     private float mTransYToRestore;
+    private boolean isSwipeInState;
+    private boolean isSwipeOutState;
 
     /**
      *
@@ -259,6 +261,11 @@ public class SwipeViewBinder<
                             .setListener(mViewPutBackAnimatorListener)
                             .start();
                 }else if(mCallback != null){
+                    if(isSwipeInState) {
+                        bindSwipeIn(getResolver());
+                    } else {
+                        bindSwipeOut(getResolver());
+                    }
                     mCallback.onRemoveView(SwipeViewBinder.this);
                 }
             }
@@ -384,20 +391,28 @@ public class SwipeViewBinder<
 
                                 if (pointerCurrentPoint.x >= pointerStartingPoint.x
                                         && pointerCurrentPoint.y >= pointerStartingPoint.y) {
-                                    bindSwipeIn(getResolver());
+                                    //bindSwipeIn(getResolver());
+                                    isSwipeInState = true;
+                                    isSwipeOutState = false;
                                 } else if (pointerCurrentPoint.x > pointerStartingPoint.x
                                         && pointerCurrentPoint.y < pointerStartingPoint.y) {
                                     transY = -v.getHeight();
-                                    bindSwipeIn(getResolver());
+                                    isSwipeInState = true;
+                                    isSwipeOutState = false;
+                                    //bindSwipeIn(getResolver());
                                 } else if (pointerCurrentPoint.x < pointerStartingPoint.x
                                         && pointerCurrentPoint.y >= pointerStartingPoint.y) {
                                     transX = -v.getWidth();
-                                    bindSwipeOut(getResolver());
+                                    isSwipeInState = false;
+                                    isSwipeOutState = true;
+                                    //bindSwipeOut(getResolver());
                                 } else if (pointerCurrentPoint.x <= pointerStartingPoint.x
                                         && pointerCurrentPoint.y < pointerStartingPoint.y) {
                                     transY = -v.getHeight();
                                     transX = -v.getWidth();
-                                    bindSwipeOut(getResolver());
+                                    isSwipeInState = false;
+                                    isSwipeOutState = true;
+                                    //bindSwipeOut(getResolver());
                                 }
 
                                 view.animate()
@@ -744,10 +759,14 @@ public class SwipeViewBinder<
             switch (mSwipeType){
                 case SwipePlaceHolderView.SWIPE_TYPE_DEFAULT:
                     if(isSwipeIn){
-                        bindSwipeIn(getResolver());
+                        //bindSwipeIn(getResolver());
+                        isSwipeInState = true;
+                        isSwipeOutState = false;
                         animator.rotation(-mSwipeDecor.getSwipeRotationAngle());
                     }else{
-                        bindSwipeOut(getResolver());
+                        //bindSwipeOut(getResolver());
+                        isSwipeInState = false;
+                        isSwipeOutState = true;
                         transX = -mLayoutView.getWidth();
                         animator.rotation(mSwipeDecor.getSwipeRotationAngle());
                     }
@@ -755,18 +774,26 @@ public class SwipeViewBinder<
                     break;
                 case SwipePlaceHolderView.SWIPE_TYPE_HORIZONTAL:
                     if(isSwipeIn){
-                        bindSwipeIn(getResolver());
+                        //bindSwipeIn(getResolver());
+                        isSwipeInState = true;
+                        isSwipeOutState = false;
                     }else{
-                        bindSwipeOut(getResolver());
+                        //bindSwipeOut(getResolver());
+                        isSwipeInState = false;
+                        isSwipeOutState = true;
                         transX = -mLayoutView.getWidth();
                     }
                     animator.translationX(transX);
                     break;
                 case SwipePlaceHolderView.SWIPE_TYPE_VERTICAL:
                     if(isSwipeIn){
-                        bindSwipeIn(getResolver());
+                        //bindSwipeIn(getResolver());
+                        isSwipeInState = true;
+                        isSwipeOutState = false;
                     }else{
-                        bindSwipeOut(getResolver());
+                        //bindSwipeOut(getResolver());
+                        isSwipeInState = false;
+                        isSwipeOutState = true;
                         transY = -mLayoutView.getHeight();
                     }
                     animator.translationY(transY);
